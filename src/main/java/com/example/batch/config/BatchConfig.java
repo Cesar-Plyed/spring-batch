@@ -9,14 +9,19 @@ import org.springframework.batch.infrastructure.item.data.RepositoryItemWriter;
 import org.springframework.batch.infrastructure.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.infrastructure.item.file.FlatFileItemReader;
 import org.springframework.batch.infrastructure.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.example.batch.listener.JobCompletionListener;
+import com.example.batch.model.Product;
+import com.example.batch.model.ProductCSV;
+import com.example.batch.model.ProductRepository;
 import com.example.batch.model.User;
 import com.example.batch.model.UserCSV;
+import com.example.batch.processor.ProductProcessor;
 import com.example.batch.processor.UserProcessor;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +35,56 @@ public class BatchConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final UserProcessor userProcessor;
+    private final ProductProcessor productProcessor;
     private final JobCompletionListener jobCompletionListener;
 
+    // ProductsCSV
+    @Bean
+    public FlatFileItemReader<ProductCSV> productCsvReader() {
+        return new FlatFileItemReaderBuilder<ProductCSV>()
+                .name("productCsvReader")
+                .resource(new ClassPathResource("productos.csv"))
+                .encoding("UTF-8")
+                .linesToSkip(1)
+                .delimited()
+                .delimiter(",")
+                .names("nombre", "precio", "categoria", "stock")
+                .fieldSetMapper(fieldSet -> {
+                    ProductCSV p = new ProductCSV();
+                    p.setName(fieldSet.readString("nombre"));
+                    p.setPrice(fieldSet.readDouble("precio"));
+                    p.setCategory(fieldSet.readString("categoria"));
+                    p.setStock(fieldSet.readInt("stock"));
+                    return p;
+                })
+                .build();
+    }
+
+    @Bean
+    public RepositoryItemWriter<Product> productWriter(
+            ProductRepository productRepository) {
+        return new RepositoryItemWriterBuilder<Product>()
+                .repository(productRepository)
+                .methodName("save")
+                .build();
+    }
+
+    @Bean
+    @Qualifier("readProductsStep")
+    public Step readProductsStep(RepositoryItemWriter<Product> productoWriter) {
+        return new StepBuilder("leerProductosStep", jobRepository)
+                .<ProductCSV, Product>chunk(3)
+                .transactionManager(platformTransactionManager)
+                .reader(productCsvReader())
+                .processor(productProcessor)
+                .writer(productoWriter)
+                .faultTolerant()
+                .skip(Exception.class)
+                .skipLimit(5)
+                .build();
+    }
+
+    // UsersCSV
     @Bean
     public FlatFileItemReader<UserCSV> csvReader() {
         return new FlatFileItemReaderBuilder<UserCSV>()
@@ -63,6 +116,7 @@ public class BatchConfig {
     }
 
     @Bean
+    @Qualifier("readAndSaveUserStep")
     public Step readAndSaveUserStep(
             RepositoryItemWriter<User> dbWriter) {
         return new StepBuilder("readAndSaveUserStep", jobRepository)
@@ -78,10 +132,11 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job importUsersJob(Step readAndSaveUserStep) {
-        return new JobBuilder("importUsersJob", jobRepository)
+    public Job importDataJob(@Qualifier("readAndSaveUserStep") Step readAndSaveUserStep, @Qualifier("readProductsStep") Step readProductsStep) {
+        return new JobBuilder("importDataJob", jobRepository)
                 .listener(jobCompletionListener)
                 .start(readAndSaveUserStep)
+                .next(readProductsStep)
                 .build();
     }
 }
