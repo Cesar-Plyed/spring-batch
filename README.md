@@ -138,8 +138,8 @@ users.csv (12 rows)
 
 ## Next Steps
 
-- [] Add `@Scheduled` for automatic execution
+- [ ] Add `@Scheduled` for automatic execution
 - [ ] Read from a REST API instead of a CSV
-- [✓] Process multiple files with `MultiResourceItemReader`
+- [x] Process multiple files with `MultiResourceItemReader`
 - [ ] Parallelize with Partitioning for millions of records
 - [ ] Add metrics with Spring Actuator
