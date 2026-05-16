@@ -7,12 +7,17 @@ import org.springframework.stereotype.Component;
 
 import com.example.batch.model.User;
 import com.example.batch.model.UserCSV;
+import com.example.batch.model.UserRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class UserProcessor implements ItemProcessor<UserCSV, User> {
+
+    private final UserRepository userRepository;
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
@@ -43,11 +48,19 @@ public class UserProcessor implements ItemProcessor<UserCSV, User> {
             return null;
         }
 
+        String email = csvItem.getEmail().toLowerCase().trim();
+
+        // Skip user if email already exists to avoid DB unique constraint violation
+        if (userRepository.existsByEmail(email)) {
+            log.warn("Duplicate email detected, skipping user: {}", email);
+            return null;
+        }
+
         User user = new User();
 
         user.setName(capitalize(csvItem.getName()));
         user.setLastname(capitalize(csvItem.getLastname()));
-        user.setEmail(csvItem.getEmail().toLowerCase().trim());
+        user.setEmail(email);
         user.setAge(csvItem.getAge());
 
         user.setFullName(

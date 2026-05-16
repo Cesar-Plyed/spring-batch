@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByAgeCategory(String ageCategory);
 
     long countByAgeCategory(String ageCategory);
+    boolean existsByEmail(String email);
 }
