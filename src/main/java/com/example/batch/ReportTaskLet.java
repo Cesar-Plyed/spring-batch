@@ -28,7 +28,7 @@ public class ReportTaskLet implements Tasklet {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    private static final String REPORT_RUTE = "batch-reporttxt";
+    private static final String REPORT_RUTE = "batch-report.txt";
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {

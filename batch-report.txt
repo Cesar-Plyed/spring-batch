@@ -1,4 +1,4 @@
-++++++++++++++++++++++ Report spring batch Date: 15/05/2026 20:56:47++++++++++++++++++++++
+++++++++++++++++++++++ Report spring batch Date: 15/05/2026 21:10:40++++++++++++++++++++++
 --- Procesed users: 10 ---
   Juan garcía                    | juan.garcia@email.com               | YOUNG ADULT
   María lópez                    | maria.lopez@email.com               | ADULT
@@ -11,7 +11,13 @@
   Diego flores                   | diego.flores@email.com              | YOUNG ADULT
   Isabella morales               | isabella.morales@email.com          | ADULT
 
---- Proceced products: 6 ---
+--- Proceced products: 12 ---
+  Laptop Dell XPS                     | $  25999.99 | DISPONIBLE
+  Teclado Mecanico                    | $   1299.50 | DISPONIBLE
+  Monitor 4K                          | $   8500.00 | DISPONIBLE
+  Mouse Inalambrico                   | $    599.00 | SIN STOCK
+  Webcam HD                           | $   1150.00 | DISPONIBLE
+  Disco SSD 1TB                       | $   2200.00 | DISPONIBLE
   Laptop Dell XPS                     | $  25999.99 | DISPONIBLE
   Teclado Mecanico                    | $   1299.50 | DISPONIBLE
   Monitor 4K                          | $   8500.00 | DISPONIBLE
