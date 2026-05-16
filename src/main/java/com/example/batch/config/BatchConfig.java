@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.example.batch.ReportTaskLet;
 import com.example.batch.listener.JobCompletionListener;
 import com.example.batch.model.Product;
 import com.example.batch.model.ProductCSV;
@@ -37,6 +38,15 @@ public class BatchConfig {
     private final UserProcessor userProcessor;
     private final ProductProcessor productProcessor;
     private final JobCompletionListener jobCompletionListener;
+    private final ReportTaskLet reportTaskLetl;
+
+    // Tasklet
+    @Bean
+    public Step generatedReportedStep() {
+        return new StepBuilder("generatedReportedStep", jobRepository)
+                .tasklet(reportTaskLetl, platformTransactionManager)
+                .build();
+    }
 
     // ProductsCSV
     @Bean
@@ -132,11 +142,14 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job importDataJob(@Qualifier("readAndSaveUserStep") Step readAndSaveUserStep, @Qualifier("readProductsStep") Step readProductsStep) {
+    public Job importDataJob(@Qualifier("readAndSaveUserStep") Step readAndSaveUserStep,
+            @Qualifier("readProductsStep") Step readProductsStep,
+            @Qualifier("generatedReportedStep") Step generatedReportedStep) {
         return new JobBuilder("importDataJob", jobRepository)
                 .listener(jobCompletionListener)
                 .start(readAndSaveUserStep)
                 .next(readProductsStep)
+                .next(generatedReportedStep)
                 .build();
     }
 }

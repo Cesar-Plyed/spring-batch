@@ -1,0 +1,24 @@
+++++++++++++++++++++++ Report spring batch Date: 14/05/2026 11:33:49++++++++++++++++++++++
+--- Procesed users: 10 ---
+  Juan garcía                    | juan.garcia@email.com               | YOUNG ADULT
+  María lópez                    | maria.lopez@email.com               | ADULT
+  Carlos martínez                | carlos.martinez@email.com           | ADULT
+  Ana rodríguez                  | ana.rodriguez@email.com             | YOUNG ADULT
+  Laura gómez                    | laura.gomez@email.com               | YOUNG ADULT
+  Miguel hernández               | miguel.hernandez@email.com          | ADULT
+  Sofia díaz                     | sofia.diaz@email.com                | YOUNG ADULT
+  Elena ramírez                  | elena.ramirez@email.com             | ADULT
+  Diego flores                   | diego.flores@email.com              | YOUNG ADULT
+  Isabella morales               | isabella.morales@email.com          | ADULT
+
+--- Proceced products: 6 ---
+  Laptop Dell XPS                     | $  25999.99 | DISPONIBLE
+  Teclado Mecanico                    | $   1299.50 | DISPONIBLE
+  Monitor 4K                          | $   8500.00 | DISPONIBLE
+  Mouse Inalambrico                   | $    599.00 | SIN STOCK
+  Webcam HD                           | $   1150.00 | DISPONIBLE
+  Disco SSD 1TB                       | $   2200.00 | DISPONIBLE
+
+========================================
+   FIN DEL REPORTE
+========================================
